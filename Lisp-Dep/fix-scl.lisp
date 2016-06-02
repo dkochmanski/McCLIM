@@ -8,12 +8,8 @@
 	do (export sym :clim-mop)))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (export '(clim-lisp-patch::defconstant
-            clim-lisp-patch::defclass)
+  (export '(clim-lisp-patch::defclass)
           :clim-lisp-patch))
-
-(defmacro clim-lisp-patch:defconstant (symbol value &optional docu)
-  `(defvar ,symbol ,value ,@(and docu (list docu))))
 
 (defvar clim-lisp-patch::*compile-time-clos-names* (make-hash-table))
 
