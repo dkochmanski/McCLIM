@@ -598,18 +598,10 @@ supertypes of TYPE that are presentation types"))
 ;;; that if a CLOS class exists at compile time, it will exist at
 ;;; load/run time too.
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  #-(or excl cmu sbcl openmcl)
   (defun compile-time-clos-p (name)
     (let ((meta (find-class name nil)))
       (and meta
 	   (typep meta 'standard-class))))
-
-  #+(or excl cmu sbcl openmcl)
-  (defun compile-time-clos-p (name)
-    (let ((metaclass (find-class name nil)))
-      (or (and metaclass
-	     (typep metaclass 'standard-class))
-	(clim-lisp-patch::compile-time-clos-class-p name))))
 
   (defun make-default-description (name)
     "Create a description string from the type name"
