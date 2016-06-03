@@ -1,18 +1,9 @@
 
 (defsystem #:clim-lisp
   :serial t
-  :depends-on (#:trivial-gray-streams)
+  :depends-on (#:closer-mop #:trivial-gray-streams)
   :components (;; First possible patches
                (:file "patch")
                (:module "Lisp-Dep"
-                        :components
-                        (#+(or cmu scl excl sbcl openmcl lispworks clisp ecl)
-                           (:file   #+cmu       "fix-cmu"
-                                    #+scl       "fix-scl"
-                                    #+excl      "fix-acl"
-                                    #+sbcl      "fix-sbcl"
-                                    #+openmcl   "fix-openmcl"
-                                    #+lispworks "fix-lispworks"
-                                    #+clisp     "fix-clisp"
-                                    #+ecl       "fix-ecl")))
+                :components ((:file "fix-mop")))
                (:file "package")))

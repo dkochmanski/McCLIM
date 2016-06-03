@@ -184,7 +184,7 @@
            #:with-output-to-string #:with-package-iterator #:with-simple-restart #:with-slots
            #:with-standard-io-syntax #:write #:write-byte #:write-char #:write-line #:write-sequence
            #:write-string #:write-to-string #:y-or-n-p #:yes-or-no-p #:zerop))
-        (packages '(:common-lisp))
+        (packages '(:closer-common-lisp))
         (gray-symbols
          '(#:fundamental-stream
            #:fundamental-input-stream
