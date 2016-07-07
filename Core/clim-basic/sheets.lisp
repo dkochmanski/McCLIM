@@ -669,11 +669,7 @@ that this might be different from the sheet's native region."
     (dispatch-event (sheet-mirrored-ancestor sheet)
 		    (make-instance 'window-repaint-event
 				   :sheet (sheet-mirrored-ancestor sheet)
-				   :region (sheet-native-region sheet))))
-  (dolist (child (sheet-children sheet))
-    (when (sheet-enabled-p child)
-      (note-sheet-transformation-changed child))))
-
+				   :region (sheet-native-region sheet)))))
 
 (defmethod (setf sheet-region) :after (region (sheet mirrored-sheet-mixin))
   (declare (ignore region))
@@ -683,15 +679,11 @@ that this might be different from the sheet's native region."
   (update-mirror-geometry sheet))
 
 (defmethod note-sheet-transformation-changed ((sheet basic-sheet))
-  (when (and (not (graftp sheet)) (sheet-mirrored-ancestor sheet))
+  (unless (graftp sheet)
     (dispatch-event (sheet-mirrored-ancestor sheet)
 		    (make-instance 'window-repaint-event
 				   :sheet (sheet-mirrored-ancestor sheet)
-				   :region (sheet-native-region sheet))))
-  ;; propagate to children
-  (dolist (child (sheet-children sheet))
-    (when (sheet-enabled-p child)
-      (note-sheet-transformation-changed child))))
+				   :region (sheet-native-region sheet)))))
 
 (defmethod note-sheet-transformation-changed ((sheet mirrored-sheet-mixin))
   (update-mirror-geometry sheet))

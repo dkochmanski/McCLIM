@@ -41,12 +41,10 @@
 	 (cond
 	   ((eq pointer-sheet (or grab-sheet pointer-pressed-sheet))
 	    (call-next-method))
-	   ((or (typep event 'pointer-button-release-event)
-		(typep event 'pointer-motion-event))
+	   ((typep event 'pointer-button-release-event)
 	    ;; send event to ...
 	    (setf (port-pointer-sheet port) (or grab-sheet pointer-pressed-sheet))
-	    (call-next-method)
-	    (setf (port-pointer-sheet port) pointer-sheet))
+	    (call-next-method))
 	   (t
 	    nil)))
 	(t
@@ -58,33 +56,18 @@
     (when sheet
       (cond ((eq sheet (event-sheet event))
 	     (dispatch-event sheet event))
-	    (t
-	     (if (eq (sheet-mirrored-ancestor sheet) (sheet-mirrored-ancestor (event-sheet event)))
-		 (dispatch-event sheet
-				 (make-instance (type-of event)
-						:pointer (slot-value event 'climi::pointer)
-						:button (slot-value event 'climi::button)
-						:x (slot-value event 'climi::x) 
-						:y (slot-value event 'climi::y) 
-						:graft-x (slot-value event 'climi::graft-x)
-						:graft-y (slot-value event 'climi::graft-y)
-						:sheet sheet
-						:modifier-state (slot-value event 'climi::modifier-state)
-						:timestamp (slot-value event 'climi::timestamp)))
-		 (dispatch-event sheet
-				 (make-instance (type-of event)
-						:pointer (slot-value event 'climi::pointer)
-						:button (slot-value event 'climi::button)
-						:x (slot-value event 'climi::x)  ;; wrong value
-						:y (slot-value event 'climi::y)  ;; wrong value
-						:graft-x (slot-value event 'climi::graft-x)
-						:graft-y (slot-value event 'climi::graft-y)
-						:sheet sheet
-						:modifier-state (slot-value event 'climi::modifier-state)
-						:timestamp (slot-value event 'climi::timestamp)))))))))
-		 
-		 
-		 
+	    (t 
+	     (dispatch-event sheet
+			     (make-instance (type-of event)
+					    :pointer (slot-value event 'climi::pointer)
+					    :button (slot-value event 'climi::button)
+					    :x (slot-value event 'climi::x)
+					    :y (slot-value event 'climi::y)
+					    :graft-x (slot-value event 'climi::graft-x)
+					    :graft-y (slot-value event 'climi::graft-y)
+					    :sheet sheet
+					    :modifier-state (slot-value event 'climi::modifier-state)
+					    :timestamp (slot-value event 'climi::timestamp))))))))
 ;;;
 ;;; repaint 
 ;;;

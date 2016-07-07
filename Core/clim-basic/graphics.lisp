@@ -759,13 +759,11 @@ position for the character."
              (replay-output-record ,record ,sheet))))))
 
 (defun invoke-with-double-buffering (sheet continuation x1 y1 x2 y2)
-  (let* ((msheet (sheet-mirrored-ancestor sheet))
-	 (medium (sheet-medium sheet))
+  (let* ((medium (sheet-medium sheet))
 	 (sheet-transform (sheet-native-transformation sheet))
 	 (medium-transform (medium-transformation (sheet-medium sheet)))
-	 (world-transform (compose-transformations
-			   sheet-transform
-			   medium-transform)))
+	 (world-transform (compose-transformations sheet-transform
+						   medium-transform)))
     (multiple-value-bind (sheet-x1 sheet-y1)
 	(transform-position world-transform x1 y1)
       (multiple-value-bind (sheet-x2 sheet-y2)
@@ -778,12 +776,12 @@ position for the character."
 	       (pixmap-y2 (ceiling sheet-y2))
 	       (pixmap-width (- pixmap-x2 pixmap-x1))
 	       (pixmap-height (- pixmap-y2 pixmap-y1))
-	       (current-sheet-region (sheet-region msheet))
+	       (current-sheet-region (sheet-region sheet))
 	       (sheet-native (compose-transformation-with-translation
 			      sheet-transform
 			      (- pixmap-x1)
 			      (- pixmap-y1)))
-	       (pixmap (allocate-pixmap msheet pixmap-width pixmap-height))
+	       (pixmap (allocate-pixmap sheet pixmap-width pixmap-height))
 	       )
 	  (unless pixmap
 	    (error "Couldn't allocate pixmap")) 
@@ -800,8 +798,8 @@ position for the character."
 		;; transformation for the pixmap will be the same as that of
 		;; the mirror .
 		(unwind-protect
-		     (letf (((sheet-parent msheet) nil)
-			    ((sheet-direct-mirror msheet)
+		     (letf (((sheet-parent sheet) nil)
+			    ((sheet-direct-mirror sheet)
 			     (pixmap-mirror pixmap)))
 		       (unwind-protect
 			    (let ((pixmap-region
@@ -809,7 +807,7 @@ position for the character."
 							    user-pixmap-y1
 							    user-pixmap-x2
 							    user-pixmap-y2)))
-			      (set-native sheet-native pixmap-region  msheet)
+			      (set-native sheet-native pixmap-region  sheet)
 			      ;(break)
 			      (with-drawing-options
 				  (medium :ink (medium-background medium))
@@ -825,10 +823,10 @@ position for the character."
 				       user-pixmap-x2 user-pixmap-y2))
 			 (set-native sheet-transform
 				     current-sheet-region
-				     msheet)))
+				     sheet)))
 		  (copy-from-pixmap pixmap 0 0
-				    pixmap-width pixmap-height msheet
-				    pixmap-x1 pixmap-y1)
+				    pixmap-width pixmap-height sheet
+				    user-pixmap-x1 user-pixmap-y1)
 		  (deallocate-pixmap pixmap))))))))))
 
 (defmacro with-double-buffering (((sheet &rest bounds-args)
